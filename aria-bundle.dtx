@@ -1,0 +1,124 @@
+% \iffalse meta-comment
+%<*internal>
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\keepsilent
+\askforoverwritefalse
+\preamble
+----------------------------------------------------------------
+aria-bundle --- Class and package bundle for ARIA Master
+E-mail: julien.tanguy@jhome.fr
+Released under the LaTeX Project Public License v1.3c or later
+See http://www.latex-project.org/lppl.txt
+----------------------------------------------------------------
+
+\endpreamble
+\postamble
+
+Copyright (C) 2012 by Julien Tanguy <julien.tanguy@jhome.fr>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License (LPPL), either
+version 1.3c of this license or (at your option) any later
+version.  The latest version of this license is in the file:
+
+http://www.latex-project.org/lppl.txt
+
+This work is "maintained" (as per LPPL maintenance status) by
+Julien Tanguy.
+
+This work consists of the files aria-bundle.dtx,
+                                README.md
+and the derived files           .
+\endpostamble
+\UseTDS
+\usedir{tex/latex/ariabundle}
+\generate{
+    \file{aria-report.cls}{\from{\jobname.dtx}{report}}
+}
+%</install>
+%<install>\endbatchfile
+%<*internal>
+\usedir{source/latex/ariabundle}
+\nopreamble\nopostamble
+\generate{
+    \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\ifx\fmtname\nameofplainTeX
+    \expandafter\endbatchfile
+\else
+    \expandafter\endgroup
+\fi
+%</internal>
+%<*report>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{aria-report}[ 2013/01/16 v0.0 Master Aria Report class]
+%</report>
+%<*driver>
+\documentclass{ltxdoc}
+\EnableCrossrefs
+%\DisableCrossrefs     % say \DisableCrossrefs if index is ready
+\CodelineIndex
+\RecordChanges         % gather update information
+%\OnlyDescription      % comment out for implementation details
+\begin{document}
+    \DocInput{\jobname.dtx}
+\end{document}
+%</driver>
+%
+% \fi
+%
+% \CheckSum{}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \GetFileInfo{aria-report.cls}
+%
+% \title{The ARIA bundle: \fileinfo\ for \LaTeXe\ documents\thanks{^^A
+%        This file has version number \fileversion,
+%        last revised \filedate.}}
+% \author{Julien Tanguy}
+% \date{\filedate}
+% \maketitle
+%
+% \PrintChanges
+% \DoNotIndex{\the}
+%
+% \section{Introduction}
+%
+% \section{The user interface}
+%
+% \StopEventually{^^A
+%  \PrintIndex
+%}
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*report>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\endinput
+%</report>
+%    \end{macrocode}
+%\Finale
