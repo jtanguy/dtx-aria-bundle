@@ -1,4 +1,6 @@
 *.acn
+*.fls
+*.pdf
 *.acr
 *.alg
 *.aux
