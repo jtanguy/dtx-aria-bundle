@@ -34,7 +34,9 @@ Julien Tanguy.
 
 This work consists of the files aria-bundle.dtx,
                                 README.md
-and the derived files           .
+
+and the derived files           aria-bundle.ins,
+                                aria-report.cls
 \endpostamble
 \UseTDS
 \usedir{tex/latex/ariabundle}
@@ -55,9 +57,12 @@ and the derived files           .
     \expandafter\endgroup
 \fi
 %</internal>
+%<*driver>
+\ProvidesFile{aria-report.cls}
+%</driver>
 %<*report>
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{aria-report}[ 2013/01/16 v0.0 Master Aria Report class]
+\ProvidesClass{aria-report}[2013/01/25 v0.1-SNAPSHOT Document class for writing reports for ARIA Master]
 %</report>
 %<*driver>
 \documentclass{ltxdoc}
@@ -73,7 +78,7 @@ and the derived files           .
 %
 % \fi
 %
-% \CheckSum{}
+% \CheckSum{205}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -105,8 +110,75 @@ and the derived files           .
 % \DoNotIndex{\the}
 %
 % \section{Introduction}
+% The \textsf{aria-report} class is based on the standard report class.
+% It provides an additional command for printing the title page
 %
 % \section{The user interface}
+% 
+% \subsection{Class options}
+% 
+% \subsubsection{Choosing your Master}
+% First you must select your current option for the master ARIA.
+% \begin{description}
+%     \item[asi] for the ARIA Master in Automatic control, Signal and Image
+%     \item[trcs] for the ARIA Master in Real Time, Management and Supervision
+%     \item[roba] for the ARIA Master in Advanced Robotics
+% \end{description}
+% The option is passed via a class option
+% 
+% \subsubsection{Bibliography report or Master Thesis}
+% You must also select the type of report:
+% \begin{description}
+%     \item[biblio] for writing a bibliography report
+%     \item[thesis] for the master thesis
+% \end{description}
+% The option is passed via a class option
+% 
+% \subsection{Special commands}
+% \subsection{General information}
+% \DescribeMacro{\masteryear}
+% Use this command in the preamble to provide the year of your master.
+% \cs{masteryear} \marg{year}
+% 
+% For example: \cs{masteryear}\{2012--2013\}
+% 
+% \DescribeMacro{\subtitle}
+% Apart from the usual \cs{title}, \cs{author}, and \cs{date} commands, you
+% can use the command \cs{subtitle} \marg{Your subtitle} to provide your document
+% with a sub-title.
+% 
+% \subsection{Advisor and jury information}
+% \DescribeMacro{\jurypresident}
+% \DescribeMacro{\supervisor}
+% \DescribeMacro{\examiner}
+% To enter information about your jury and advisor, you must use one of the following commands:
+% \begin{quote}
+% \cs{jurypresident}\marg{Name}\marg{Title}\marg{Institute} to enter the name, title and institute
+%         of your jury president
+%
+% \cs{supervisor}\marg{Name}\marg{Title}\marg{Institute} to enter the name, title and institute
+%         of your supervisor
+%
+% \cs{examiner}\marg{Name}\marg{Title}\marg{Institute} to enter the name, title and institute
+%         of one of your jury examiners. You can use this command multiple times.
+% \end{quote}
+% 
+% In addition to this, several shortcuts are defined for convenience. These macros are optional,
+% and just save you from a few keystrokes. You can still input the title and institute manually.
+% \DescribeMacro{\PU}
+% \DescribeMacro{\MC}
+% The macro \cs{PU} stands for the french title \emph{Professeur des Universit\'es}, while
+% the macro \cs{MC} stands for the french title \emph{Maitre de Conf\'erences}.
+% \DescribeMacro{\ECN}
+% \DescribeMacro{\UN}
+% The macro \cs{ECN} stands for the \emph{\'Ecole Centrale de Nantes}, and
+% the macro \cs{UN} stands for the \emph{Universit\'e de Nantes}.
+% 
+% 
+% \DescribeMacro{\maketitlepage}
+% The \cs{maketitlepage} command is used at the beginning of the document, and prints out the title page.
+% You should have defined your master year and type, your advisor and your jury members at this point.
+% 
 %
 % \StopEventually{^^A
 %  \PrintIndex
@@ -116,6 +188,202 @@ and the derived files           .
 %    \begin{macrocode}
 %<*report>
 %    \end{macrocode}
+% \subsection{Initialisation}
+% First we define some boolean switches for later use.
+%    \begin{macrocode}
+\newif\if@asi\@asifalse
+\newif\if@trcs\@trcsfalse
+\newif\if@roba\@robafalse
+\newif\if@thesis\@thesistrue
+%    \end{macrocode}
+% \subsection{Imports}
+% We need the \textsf{geometry} package to format the title page and redefine margins.
+%    \begin{macrocode}
+\RequirePackage[a4paper, margin=2.5cm]{geometry}
+%    \end{macrocode}
+% \subsection{Class Options}
+% We define the different class options.
+%    \begin{macrocode}
+\DeclareOption{asi}{\@asitrue}
+\DeclareOption{trcs}{\@trcstrue}
+\DeclareOption{roba}{\@robatrue}
+\DeclareOption{thesis}{\@thesistrue}
+\DeclareOption{biblio}{\@thesisfalse}
+
+\DeclareOption*{
+    \PassOptionsToClass{\CurrentOption}{report}
+}
+\ProcessOptions
+\LoadClassWithOptions{report}
+%    \end{macrocode}
+% \subsection{Internal macros}
+% \begin{macro}{\master@name}
+% \begin{macro}{\master@shortname}
+% \begin{macro}{\master@institute}
+% \begin{macro}{\master@shortinstitute}
+% \begin{macro}{\master@year}
+% \begin{macro}{\@subtitle}
+% \begin{macro}{\master@jurypresident}
+% \begin{macro}{\master@supervisor}
+% These macros are used internally to save various informations about the document.
+% Note that \cs{master@institute} and \cs{master@shortinstitute} are currently unused.
+%    \begin{macrocode}
+\newcommand{\master@name}{}
+\newcommand{\master@shortname}{}
+\newcommand{\master@institute}{}
+\newcommand{\master@shortinstitute}{}
+\newcommand{\master@year}{}
+\newcommand{\@subtitle}{}
+\newcommand{\master@jurypresident}{}
+\newcommand{\master@supervisor}{}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% At the beginning of the document, select the master name and short name according to the class options
+%
+%    \begin{macrocode}
+\AtBeginDocument{%
+\if@asi
+    \renewcommand{\master@name}{Automatique, Signal et Image}
+    \renewcommand{\master@shortname}{ASI}
+\fi
+
+\if@trcs
+    \renewcommand{\master@name}{Temps r\' eel, Conduite et Supervision}
+    \renewcommand{\master@shortname}{TRCS}
+\fi
+
+\if@roba
+    \renewcommand{\master@name}{Robotique Avanc\' ee}
+    \renewcommand{\master@shortname}{ROBA}
+\fi
+}
+%    \end{macrocode}
+% \begin{macro}{\master@examiners}
+% We declare also the examiner list
+%    \begin{macrocode}
+\newtoks\master@examiners
+\master@examiners{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{User commands}
+% \begin{macro}{\masteryear}
+% \begin{macro}{\subtitle}
+% \begin{macro}{\PU}
+% \begin{macro}{\MC}
+% \begin{macro}{\ECN}
+% \begin{macro}{\UN}
+% \begin{macro}{\jurypresident}
+% \begin{macro}{\supervisor}
+% \begin{macro}{\examiner}
+%    \begin{macrocode}
+\newcommand{\masteryear}[1]{%
+    \renewcommand{\master@year}{#1}
+}
+\newcommand{\subtitle}[1]{%
+    \renewcommand{\@subtitle}{#1}
+}
+
+\newcommand{\PU}{Professeur des universit\' es}
+\newcommand{\MC}{Maitre de conf\' erences}
+
+\newcommand{\ECN}{\' Ecole Centrale de Nantes}
+\newcommand{\UN}{Universit\'e de Nantes}
+
+\newcommand{\jurypresident}[3]{%
+    \renewcommand{\master@jurypresident}{#1 & #2, #3\\[5pt]}
+}
+\newcommand{\supervisor}[3]{%
+    \renewcommand{\master@supervisor}{#1 & #2, #3\\[5pt]}
+}
+
+\newcommand{\examiner}[3]{%
+    \master@examiners=\expandafter{%
+      \the\master@examiners&#1&#2,\space#3\\[5pt]}
+}
+
+\newcommand{\institute}[2][\@empty]{%
+    \renewcommand{\master@institute}{#2}
+    \if#1\@empty
+        \renewcommand{\master@shortinstitute}{#2}
+    \else
+        \renewcommand{\master@shortinstitute}{#1}
+    \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\maketitlepage}
+% We can print the title page
+%    \begin{macrocode}
+\newcommand{\maketitlepage}{%
+\begin{titlepage}
+    \newgeometry{margin=1.5cm}
+    \thispagestyle{empty}
+    \setcounter{page}{0}
+    \bf  \textrm{\' Ecole Centrale de Nantes} \hfill
+    \bf  \textrm{\' Ecole des Mines de Nantes} \hfill
+    \bf  \textrm{Universit\' e de Nantes}
+    \vskip 10mm
+    \begin{center}
+        \Large \uppercase{\bf Master Automatique, Robotique et Informatique appliqu\' ee}
+        \vskip 10mm
+        \large{Sp\' ecialit\' e : \master@name}
+        \vskip 10mm
+        Ann\' ee \master@year
+        \vskip 12mm
+\if@thesis
+        {\Large Th\` ese de Master}
+\else
+        {\Large M\' emoire bibliographique}
+\fi
+        \vskip 6mm
+        \normalsize Pr\' esent\' e et soutenu par :
+        \vskip 8mm  
+        {\Large \@author}
+        \vskip 12mm  
+        le \@date
+        \vskip 3mm  
+        {\large \` a l'Institut de Recherche en Communications et Cybern\' etique de Nantes}
+        \vskip 12mm
+        {\Large TITRE}
+        \vskip 6mm
+        {\huge \@title}
+        \vskip 12mm
+        {\large \@subtitle}
+        \vskip 19mm
+        \vfill
+        {\Large JURY}
+        \vskip 5mm
+        \begin{footnotesize}
+            \begin{tabular}{lll}
+                \textit{Pr\' esident :} & \master@jurypresident
+                \textit{Directeur :} 	& \master@supervisor 
+                \textit{Examinateurs :} \the\master@examiners
+                \textit{Laboratoire :}   &  \multicolumn{2}{l}{Institut de Recherche en Communications et Cybern\' etique de Nantes -- UMR CNRS 6597}
+            \end{tabular}
+        \end{footnotesize}
+    \end{center}
+    \restoregeometry
+\end{titlepage}
+}
+%    \end{macrocode}
+% \end{macro}
 %
 %    \begin{macrocode}
 \endinput
