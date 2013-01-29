@@ -36,7 +36,8 @@ This work consists of the files aria-bundle.dtx,
                                 README.md
 
 and the derived files           aria-bundle.ins,
-                                aria-report.cls
+                                aria-report.cls,
+                                example.tex
 \endpostamble
 \UseTDS
 \usedir{tex/latex/ariabundle}
@@ -50,6 +51,7 @@ and the derived files           aria-bundle.ins,
 \nopreamble\nopostamble
 \generate{
     \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+    \file{example.tex}{\from{\jobname.dtx}{example}}
 }
 \ifx\fmtname\nameofplainTeX
     \expandafter\endbatchfile
@@ -58,23 +60,51 @@ and the derived files           aria-bundle.ins,
 \fi
 %</internal>
 %<*driver>
-\ProvidesFile{aria-report.cls}
+\ProvidesFile{aria-bundle.dtx}
 %</driver>
+%<report>\NeedsTeXFormat{LaTeX2e}
+%<report>\ProvidesClass{aria-report}
 %<*report>
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{aria-report}[2013/01/25 v0.1-PRE Document class for writing reports for ARIA Master]
+    [2013/01/29 v1.0 Document class for writing reports for ARIA Master]
 %</report>
 %<*driver>
 \documentclass{ltxdoc}
-\EnableCrossrefs
-%\DisableCrossrefs     % say \DisableCrossrefs if index is ready
+%\EnableCrossrefs
+\DisableCrossrefs     % say \DisableCrossrefs if index is ready
 \CodelineIndex
 \RecordChanges         % gather update information
-%\OnlyDescription      % comment out for implementation details
+\OnlyDescription      % comment out for implementation details
 \begin{document}
     \DocInput{\jobname.dtx}
 \end{document}
 %</driver>
+%<*example>
+\documentclass[trcs, biblio, a4paper]{aria-report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\title{My master thesis title}
+\subtitle{Some subtitle}
+
+\author{Mallory Sauer}
+\institute{IRCCyN}
+\date{Lundi 32 janvier}
+\masteryear{2010--2011}
+
+\jurypresident{Dr. Wilford Nienow}{\PU}{\ECN}
+\supervisor{Nettie Bernier}{\MC}{\UN}
+\examiner{Laurie Gulgowski}{Ingénieur de Recherche}{\UN}
+\examiner{Troy Schultz}{\MC}{World Company}
+
+\begin{document}
+    \maketitlepage
+
+    \tableofcontents
+    \chapter{One}
+    Chapitre un
+\end{document}
+%</example>
 %
 % \fi
 %
@@ -96,10 +126,11 @@ and the derived files           aria-bundle.ins,
 %   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %   Right brace   \}     Tilde         \~}
 %
+% \changes{v1.0}{2013/01/29}{Initial release}
 %
-% \GetFileInfo{aria-report.cls}
+% \GetFileInfo{aria-bundle.dtx}
 %
-% \title{The ARIA bundle: \fileinfo\ for \LaTeXe\ documents\thanks{^^A
+% \title{The ARIA bundle: Writing master reports with \LaTeXe \thanks{^^A
 %        This file has version number \fileversion,
 %        last revised \filedate.}}
 % \author{Julien Tanguy}
@@ -181,7 +212,7 @@ and the derived files           aria-bundle.ins,
 % 
 %
 % \StopEventually{^^A
-%  \PrintIndex
+% ^^A \PrintIndex
 %}
 %
 % \section{Implementation}
